@@ -1,4 +1,4 @@
-INSERT INTO department (department)
+INSERT INTO department (name)
 VALUES  ("Engineering"),
         ("Corporate"),
         ("HR"),
@@ -17,39 +17,39 @@ VALUES  ("Engineering"),
         ("Engineering");
 
 INSERT INTO role (title, salary)
-VALUES  ("Tech Wizard", 420000),
-        ("President", 911000),
-        ("Assistant", 33333),
-        ("Head Chef", 69000),
-        ("Therapist", 199400),
-        ("Accountant", 66600),
-        ("Satisfaction", 133700),
-        ("Lawyer", 472707),
-        ("Salesperson", 55555),
-        ("Analyst", 80085),
-        ("Account Manager", 999999),
-        ("Sales Lead", 42069),
-        ("Legal Team Lead", 199900),
-        ("CEO", 666999420),
-        ("Hole Digger", 100000),
-        ("Lead Engineer", 1010101);
+VALUES  ("Tech Wizard", 420000.01),
+        ("President", 911000.69),
+        ("Assistant", 33333.33),
+        ("Head Chef", 69000.96),
+        ("Therapist", 199400.00),
+        ("Accountant", 66606.66),
+        ("Satisfaction", 133700.01),
+        ("Lawyer", 472707.99),
+        ("Salesperson", 55555.55),
+        ("Analyst", 80085.00),
+        ("Account Manager", 999999.99),
+        ("Sales Lead", 42069.69),
+        ("Legal Team Lead", 199900.00),
+        ("CEO", 6669420.69),
+        ("Hole Digger", 100000.00),
+        ("Lead Engineer", 1010101.01);
 
-INSERT INTO employee (first_name, last_name)
-VALUES  ("Hayree", "Pottor", , "Lou Tennitdan")
-        ("Jorge", "Busch"),
-        ("Oshin", "Breez"),
+INSERT INTO employee (first_name, last_name, manager_id)
+VALUES  ("Hayree", "Pottor", 16),
+        ("Jorge", "Busch", 14),
+        ("Oshin", "Breez", 5),
         ("Spunch", "Bob"),
         ("Feebee", "Bridjaz"),
-        ("Eggz", "Benny"),
-        ("Benny", "Benassti"),
+        ("Eggz", "Benny", 11),
+        ("Benny", "Benassti", 5),
         ("Jo", "Goldburg"),
-        ("Liz", "Zanya"),
-        ("Saah", "Gheebred"),
+        ("Liz", "Zanya", 12),
+        ("Saah", "Gheebred", 11),
         ("Ikis", "Frawgs"),
-        ("Purdy", "Uglee")
+        ("Purdy", "Uglee"),
         ("Kollme", "Maybee"),
         ("Booty", "Judy"),
-        ("Shy", "Allahbuff"),
+        ("Shy", "Allahbuff", 16),
         ("Lou", "Tennitdan");
 
 
