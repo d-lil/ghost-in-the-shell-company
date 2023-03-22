@@ -2,6 +2,7 @@ const express = require('express');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const table = require('console.table');
+const { response } = require('express');
 const PORT = process.env.PORT || 3001;
 const app = express();
 
@@ -42,10 +43,16 @@ const promptUser = () => {
                 'View All Departments',
                 'View All Roles',
                 'View All Employees',
+                // 'View Employees by Manager',
+                // 'View Employees by Department',
                 'Add a Department',
                 'Add a Role',
                 'Add an Employee',
                 'Update an Employee Role',
+                // 'Update Employee Manager',
+                // 'Delete Department',
+                // 'Delete Role',
+                'Delete Employee',
                 'Exit'
             ]
         }
@@ -74,41 +81,25 @@ const promptUser = () => {
             case 'Update an Employee Role':
                 updateRole();
                 break;
+            // case 'Delete Department':
+            //     deleteDepartment();
+            //     break;
+            // case 'Delete Role':
+            //     deleteRole();
+            //     break;
+            case 'Delete Employee':
+                deleteEmployee();
+                break;
             case 'Exit':
                 db.end();
         }
     });
 };
 
-const addEmployeePrompt = () => {
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'first_name',
-            message: 'What is the first name of the new employee?'
-        },
-        {
-            type: 'input',
-            name: 'last_name',
-            message: 'What is the last name of the new employee?'
-        },
-        {
-            type: 'input',
-            name: 'role_id',
-            message: 'What is the role ID of the new employee?'
-        },
-        {
-            type: 'input',
-            name: 'employee_id',
-            message: 'What is the manager ID of the new employee? (Leave blank if N/A)'
-        }
-    ])
-};
 
 const viewAllDepartments = () => {
     const dbQuery = `SELECT * FROM department`;
     db.query(dbQuery, (error, results) => {
-        if (error) throw error;
         if (error) throw error;
         console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
         console.table(results);
@@ -191,17 +182,40 @@ const addRole = () => {
 })};
  
 
-async function addEmployee() {
-    const { first_name, last_name, role_id, manager_id } = await inquirer.prompt(addEmployeePrompt);
-    const dbQuery = (first_name, last_name, role_id, manager_id) => `INSERT INTO employee (first_name, last_name, role_id, manager) VALUES ('${first_name}', '${last_name}', '${role_id}', '${manager_id}')`;
-    db.query(dbQuery, (error, results) => {
-        if (error) throw error;
-        console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
-        console.table(`${first_name} ${last_name} has been added as a new employee.`);
-        console.log('\x1b[35m',`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
-        promptUser();
+const addEmployee = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'first_name',
+            message: 'What is the first name of the new employee?'
+        },
+        {
+            type: 'input',
+            name: 'last_name',
+            message: 'What is the last name of the new employee?'
+        },
+        {
+            type: 'input',
+            name: 'role_id',
+            message: 'What is the role ID of the new employee?'
+        },
+        {
+            type: 'input',
+            name: 'manager_id',
+            message: 'What is the manager ID of the new employee? (Leave blank if N/A)'
+        }
+    ])
+    .then((answers) =>{
+        const { first_name, last_name, role_id, manager_id } = answers;
+        const dbQuery = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${first_name}', '${last_name}', ${role_id}, NULLIF('${manager_id}', ''))`;
+        db.query(dbQuery, (error, results) => {
+            if (error) throw error;
+            console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+            console.table(`${first_name} ${last_name} has been added as a new employee.`);
+            console.log('\x1b[35m',`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+            promptUser();
     });
-};
+})};
 
 const updateRole = () => {
     inquirer.prompt([
@@ -227,3 +241,92 @@ const updateRole = () => {
             promptUser();
     })});
 };
+
+// const deleteDepartment = () => {
+//     const dbQuery = `SELECT * FROM department`;
+//     db.query(dbQuery, (error, results) => {
+//         if (error) throw error;
+//         console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+//         console.table(results);
+//         console.log('\x1b[35m',`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+//         deleteDepartmentPrompt();
+//     });
+// };
+// const deleteDepartmentPrompt = () => {
+//     inquirer.prompt([
+//             {
+//                 type: 'input',
+//                 name: 'id',
+//                 message: "What is the ID of department you would like to delete?" 
+//             }
+//         ])
+//         .then((answer)=> {
+//             const { id } = answer;
+//             const dbQuery = `DELETE FROM department WHERE department.id = ${id}; INSERT INTO role(department_id) VALUES(NULL)`;
+//             db.query(dbQuery, (error, results) => {
+//                 if (error) throw error;
+//                 console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+//                 console.table(`Department has been deleted.`);
+//                 console.log('\x1b[35m',`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+//                 promptUser();
+// })})};
+
+// const deleteRole = () => {
+//     const dbQuery = `SELECT * FROM role`;
+//     db.query(dbQuery, (error, results) => {
+//         if (error) throw error;
+//         console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+//         console.table(results);
+//         console.log('\x1b[35m',`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+//         deleteRolePrompt();
+//     });
+// };
+// const deleteRolePrompt = () => {
+//     inquirer.prompt([
+//         {
+//             type: 'input',
+//             name: 'id',
+//             message: 'What is the ID of the role you would like deleted?'
+//         }
+//     ])
+//     .then((answer) => {
+//         const { id } = answer;
+//             const dbQuery = `DELETE FROM role WHERE role.id = ${id}`;
+//             db.query(dbQuery, (error, results) => {
+//                 if (error) throw error;
+//                 console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+//                 console.table(`Role has been deleted.`);
+//                 console.log('\x1b[35m',`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+//                 promptUser();
+//     })
+//     })}
+
+const deleteEmployee = () => {
+    const dbQuery = `SELECT employee.id, employee.first_name, employee.last_name FROM employee`;
+    db.query(dbQuery, (error, results) => {
+        if (error) throw error;
+        console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+        console.table(results);
+        console.log('\x1b[35m',`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+        deleteEmployeePrompt();
+        });
+    };
+const deleteEmployeePrompt = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'id',
+            message: 'What is the ID of the employee you would like deleted?'
+        }
+    ])
+    .then((answer) => {
+        const { id } = answer;
+        const dbQuery = `DELETE FROM employee WHERE employee.id = ${id}`;
+            db.query(dbQuery, (error, results) => {
+                if (error) throw error;
+                console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+                console.table(`Employee has been deleted.`);
+                console.log('\x1b[35m',`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+                promptUser();
+        })
+    })}
