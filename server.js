@@ -17,7 +17,15 @@ const db = mysql.createConnection(
     },
     console.log('\x1b[45m', `Connected to the twerkers_db ♡(^ε^ )Lᵒᵛᵉᵧₒᵤ`, '\x1b[0m')
     );
-
+    console.log('\x1b[35m', `    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣎⠱⣲⠀⠀⠀⠀⠀`, '\x1b[0m')
+    console.log('\x1b[35m', `⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡠⠤⠒⠒⠒⠒⠤⢄⣈⠈⠁⠀⠀⠀⠀⠀⠀⠀`, '\x1b[0m')
+    console.log('\x1b[35m', `⠀⠀⠀⠀⠀⠀⠀⢀⡤⠒⠝⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠲⢄⡀⠀⠀⠀⠀⠀`, '\x1b[0m')
+    console.log('\x1b[35m', `⠀⠀⠀⠀⠀⢀⡴⠋⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⢠⣢⠐⡄⠀⠉⠑⠒⠒⠒⣄`, '\x1b[0m')
+    console.log('\x1b[35m', `⠀⠀⠀⣀⠴⠋⠀⠀⠀⡎⢀⣘⠿⠀⠀⢠⣀⢄⡦⠀⣛⣐⢸⠀⠀⠀⠀⠀⠀⢘`, '\x1b[0m')
+    console.log('\x1b[35m', `⡠⠒⠉⠀⠀⠀⠀⠀⡰⢅⠣⠤⠘⠀⠀⠀⠀⠀⠀⢀⣀⣤⡋⠙⠢⢄⣀⣀⡠⠊`, '\x1b[0m')
+    console.log('\x1b[35m', `⢇⠀⠀⠀⠀⠀⢀⠜⠁⠀⠉⡕⠒⠒⠒⠒⠒⠛⠉⠹⡄⣀⠘⡄⠀⠀⠀⠀⠀⠀`, '\x1b[0m')
+    console.log('\x1b[35m', `⠀⠑⠂⠤⠔⠒⠁⠀⠀⡎⠱⡃⠀⠀⡄⠀⠄⠀⠀⠠⠟⠉⡷⠁⠀⠀⠀⠀⠀⠀`, '\x1b[0m')
+    console.log('\x1b[35m', `⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⠤⠤⠴⣄⡸⠤⣄⠴⠤⠴⠄⠼⠀⠀⠀⠀⠀⠀⠀⠀`, '\x1b[0m')
 db.connect((error) => {
     if (error) throw error;
     console.log('\x1b[35m', `Welcome to the Phantom Employee Database of Your Local Shell Company`);
@@ -63,43 +71,13 @@ const promptUser = () => {
             case 'Add an Employee':
                 addEmployee();
                 break;
-            case 'Update and Employee Role':
+            case 'Update an Employee Role':
                 updateRole();
                 break;
             case 'Exit':
                 db.end();
         }
     });
-};
-
-const addDepartmentPrompt = () => {
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'name',
-            message: 'What is the name of the department you would like to add?'
-        }
-    ]);
-};
-
-const addRolePrompt = () => {
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'title',
-            message: 'What is the title of the new role?'
-        },
-        {
-            type: 'input',
-            name: 'department_id',
-            message: 'What is the department of the new role?'
-        },
-        {
-            type: 'input',
-            name: 'salary',
-            message: 'What is the salary of the new role?'
-        }
-    ])
 };
 
 const addEmployeePrompt = () => {
@@ -127,21 +105,6 @@ const addEmployeePrompt = () => {
     ])
 };
 
-const updateRolePrompt = () => {
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'employee_id',
-            message: 'What is the ID of the employee?'
-        },
-        {
-            type: 'input',
-            name: 'new_role',
-            message: "What is the ID of the new role?"
-        }
-    ])
-};
-
 const viewAllDepartments = () => {
     const dbQuery = `SELECT * FROM department`;
     db.query(dbQuery, (error, results) => {
@@ -155,7 +118,7 @@ const viewAllDepartments = () => {
 };
 
 const viewAllRoles = () => {
-    const dbQuery = `SELECT role.id, role.title, role.salary, department.department_name FROM role JOIN department on role.department = department.id`;
+    const dbQuery = `SELECT role.id, role.title,  department.name AS department, role.salary FROM role JOIN department ON role.department_id = department.id;`;
     db.query(dbQuery, (error, results) => {
         if (error) throw error;
         console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
@@ -166,7 +129,7 @@ const viewAllRoles = () => {
 };
 
 const viewAllEmployees = () => {
-    const dbQuery = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name, role.salary, employee.manager FROM employee JOIN role ON role.id = employee.role_id JOIN department ON department.id = role.department`;
+    const dbQuery = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, employee.manager_id FROM employee JOIN role ON role.id = employee.role_id JOIN department ON department.id = role.department_id;`;
     db.query(dbQuery, (error, results) => {
         if (error) throw error;
         console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
@@ -176,32 +139,56 @@ const viewAllEmployees = () => {
     });
 };
 
-async function addDepartment() {
-    const { name } = await inquirer.prompt(addDepartmentPrompt);
-    const dbQuery = (name) => `INSERT INTO department (department_name) VALUES ('${name}');`;
-    db.query(dbQuery, (error, results) => {
-        if (error) throw error;
-        
-        console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
-        console.table(`${results} has been added as a new department.`);
-        console.log('\x1b[35m',`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
-        promptUser();
+const addDepartment = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What is the name of the department you would like to add?'
+        }
+    ])
+    .then((answer) => {
+        const dbQuery = `INSERT INTO department(name) VALUES(?)`;
+        db.query(dbQuery, answer.name, (error, results) => {
+            if (error) throw error;
+            console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+            console.table(`${answer.name} has been added as a new department.`);
+            console.log('\x1b[35m',`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+            promptUser();
+        })
     });
 };
 
 
-async function addRole() {
-    const { title, department_id, salary } = await inquirer.prompt(addRolePrompt);
-    const dbQuery = (title, department_id, salary) => `INSERT INTO role (title, department_id, salary) VALUES ('${title}', '${department_id}', '${salary}')`;
-    db.query(dbQuery, (error, results) => {
-        if (error) throw error;
-        
-        console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
-        console.table(`${results} has been added as a new role.`);
-        console.log('\x1b[35m',`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
-        promptUser();
+const addRole = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'title',
+            message: 'What is the title of the new role?'
+        },
+        {
+            type: 'input',
+            name: 'department_id',
+            message: 'What is the department id of the new role?'
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'What is the salary of the new role?'
+        }
+    ])
+    .then((answers) => {
+        const { title, department_id, salary } = answers; 
+        const dbQuery = `INSERT INTO role (title, department_id, salary) VALUES ('${title}', ${department_id}, ${salary})`;
+        db.query(dbQuery, (error, results) => {
+            if (error) throw error;       
+            console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+            console.table(`${answers.title} has been added as a new role.`);
+            console.log('\x1b[35m',`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+            promptUser();
     })
-};
+})};
  
 
 async function addEmployee() {
@@ -216,14 +203,27 @@ async function addEmployee() {
     });
 };
 
-async function updateRole() {
-    const { employee_id, new_role } = await inquirer.prompt(updateRolePrompt)
-    const dbQuery = `UPDATE employee SET role = ${new_role} WHERE id = ${employee_id}`;
-    db.query(dbQuery, (error, results) => {
-        if (error) throw error;
-        console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
-        console.table(results);
-        console.log('\x1b[35m',`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
-        promptUser();
-    });
+const updateRole = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'employee_id',
+            message: 'What is the ID of the employee?'
+        },
+        {
+            type: 'input',
+            name: 'new_role',
+            message: "What is the ID of the new role?"
+        }
+    ])
+    .then((answers) => {
+        const { employee_id, new_role } = answers;
+        const dbQuery = `UPDATE employee SET role_id = ${new_role} WHERE id = ${employee_id}`;
+        db.query(dbQuery, (error, results) => {
+            if (error) throw error;
+            console.log('\x1b[35m', `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+            console.table(results);
+            console.log('\x1b[35m',`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`, '\x1b[0m');
+            promptUser();
+    })});
 };
